@@ -1,4 +1,6 @@
-
+const path = require("path");
+const fs2 = require("fs");
+const fs = require("fs").promises;
 // Ensure log files and directories exist
 const ensureDirectoriesExist = () => {
     const logFiles = ["request_log.txt", "error_log.txt", "id_counter.txt"];

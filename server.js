@@ -5,7 +5,7 @@ const fs = require("fs").promises;
 const { Configuration, OpenAIApi } = require("openai");
 const fetch = require("node-fetch");
 const extraRoutes = require('./debug/extraRoutes'); 
-require('./helpers');
+const helpers = require('./helpers');
 
 // Initialize Express app
 const app = express();
@@ -21,7 +21,7 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-ensureDirectoriesExist();
+helpers.ensureDirectoriesExist();
 
 // Endpoint to generate a story
 // TODO: validate inputs against allow-list
@@ -56,11 +56,11 @@ app.post("/generate-story", async (req, res) => {
     });
 
     const story = completion.data.choices[0].message.content.trim();
-    await logRequest(story); // Log the generated story
+    await helpers.logRequest(story); // Log the generated story
     res.json({ story: story });
   } catch (error) {
     console.error('Error generating story:', error);
-    await logError(error);
+    await helpers.logError(error);
     res.status(500).json({ error: 'An error occurred while generating the story.' });
   }
 });
