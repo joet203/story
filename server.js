@@ -4,7 +4,7 @@ const path = require("path");
 const fs = require("fs").promises;
 const { Configuration, OpenAIApi } = require("openai");
 const fetch = require("node-fetch");
-const extraRoutes = require('./extraRoutes'); 
+const extraRoutes = require('./debug/extraRoutes'); 
 require('./helpers');
 
 // Initialize Express app
@@ -24,6 +24,7 @@ const openai = new OpenAIApi(configuration);
 ensureDirectoriesExist();
 
 // Endpoint to generate a story
+// TODO: validate inputs against allow-list
 app.post("/generate-story", async (req, res) => {
   const { color, interest, dreamJob, wellnessGoal, sidekick, name, gender } = req.body;
 
@@ -65,6 +66,7 @@ app.post("/generate-story", async (req, res) => {
 });
 
 // Endpoint to generate an illustration for the story
+// TODO: validate inputs against allow-list
 app.post("/generate-illustration", async (req, res) => {
   const { story, gender, skinTone, color, name } = req.body;
 
