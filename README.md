@@ -6,3 +6,5 @@ See /public/ for front end code.
 
 Input options can be modified/added/removed at /public/options.js
 OpenAI API key should be set in .env file (or as environment variable)
+
+![image](https://github.com/user-attachments/assets/16cceb26-5aea-4902-9ebc-65bf71f1a682)
