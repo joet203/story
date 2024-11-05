@@ -12,25 +12,26 @@ const steps = [
 let currentStep = 0;
 const choices = {};
 
-// DOM elements
-const promptText = document.getElementById('prompt-text');
-const optionsGroup = document.getElementById('options-group');
-const heroNameInput = document.getElementById('hero-name');
-const generateStoryButton = document.getElementById('generate-story-button');
-const startOverButton = document.getElementById('start-over-button');
-const loadingSpinner = document.getElementById('loading-spinner');
-const storyContainer = document.getElementById('story');
-const generateImageButton = document.getElementById('generate-image-button');
-const imageSpinner = document.getElementById('image-spinner');
-const illustrationContainer = document.getElementById('illustration');
+const elements = {
+    promptText: document.getElementById('prompt-text'),
+    optionsGroup: document.getElementById('options-group'),
+    heroNameInput: document.getElementById('hero-name'),
+    generateStoryButton: document.getElementById('generate-story-button'),
+    startOverButton: document.getElementById('start-over-button'),
+    loadingSpinner: document.getElementById('loading-spinner'),
+    storyContainer: document.getElementById('story'),
+    generateImageButton: document.getElementById('generate-image-button'),
+    imageSpinner: document.getElementById('image-spinner'),
+    illustrationContainer: document.getElementById('illustration'),
+};
 
 let selectedLook = null;
 
 // Function to render options for the current step
 function renderOptions(step) {
     const { category, prompt } = steps[step];
-    promptText.textContent = prompt;
-    optionsGroup.innerHTML = '';
+    elements.promptText.textContent = prompt;
+    elements.optionsGroup.innerHTML = '';
 
     options[category].forEach(item => {
         const option = document.createElement('span');
@@ -44,13 +45,13 @@ function renderOptions(step) {
 
         option.appendChild(optionText);
         option.addEventListener('click', () => {
-            optionsGroup.querySelectorAll('.emoji-option').forEach(opt => opt.classList.remove('selected'));
+            elements.optionsGroup.querySelectorAll('.emoji-option').forEach(opt => opt.classList.remove('selected'));
             option.classList.add('selected');
             choices[category] = item.label;
             nextStep();
         });
 
-        optionsGroup.appendChild(option);
+        elements.optionsGroup.appendChild(option);
     });
 }
 
@@ -66,18 +67,16 @@ function nextStep() {
 
 // Render the Look options step
 function renderLookOptions() {
-    promptText.textContent = 'Choose Appearance:';
-    optionsGroup.style.display = 'none';
+    elements.promptText.textContent = 'Choose Appearance:';
+    elements.optionsGroup.style.display = 'none';
 
     const lookContainer = document.createElement('div');
     lookContainer.id = 'look-options';
     lookContainer.style.display = 'block';
     document.querySelector('.container').appendChild(lookContainer);
 
-    lookContainer.innerHTML = '';
-
     // Function to create rows for each gender type
-    function createLookRow(label, options) {
+    function createLookRow(label, optionsArray) {
         const labelElement = document.createElement('p');
         labelElement.textContent = label;
         labelElement.style.fontWeight = 'bold';
@@ -86,17 +85,16 @@ function renderLookOptions() {
 
         const group = document.createElement('div');
         group.className = 'options-group';
-        options.forEach(option => {
+        optionsArray.forEach(option => {
             const optionElement = document.createElement('span');
             optionElement.className = 'emoji-option';
             optionElement.textContent = option.emoji;
-            optionElement.dataset.value = `${label} ${option.label}`;
+            optionElement.dataset.value = option.label;
 
             optionElement.addEventListener('click', () => {
                 lookContainer.querySelectorAll('.emoji-option').forEach(opt => opt.classList.remove('selected'));
                 optionElement.classList.add('selected');
-                selectedLook = `${label} ${option.label}`;
-                console.log(selectedLook);
+                selectedLook = { gender: label, skinTone: option.label };
                 lookContainer.style.display = 'none';
                 renderNameStep(); // Move to Name step after Look selection
             });
@@ -114,24 +112,24 @@ function renderLookOptions() {
 
 // Render the Name input step
 function renderNameStep() {
-    promptText.textContent = 'Enter Your Name:';
-    heroNameInput.style.display = 'block';
-    generateStoryButton.style.display = 'inline-block'; // Show Generate Story button only at Name step
-    startOverButton.style.display = 'inline-block';
+    elements.promptText.textContent = 'Enter Your Name:';
+    elements.heroNameInput.style.display = 'block';
+    elements.generateStoryButton.style.display = 'inline-block'; // Show Generate Story button only at Name step
+    elements.startOverButton.style.display = 'inline-block';
 }
 
 // Generate Story button click event
-generateStoryButton.addEventListener('click', async () => {
-    choices.name = heroNameInput.value || 'Joe';
+elements.generateStoryButton.addEventListener('click', async () => {
+    choices.name = elements.heroNameInput.value.trim() || 'Hero';
     choices.look = selectedLook || null;
 
-    loadingSpinner.style.display = 'block';
-    storyContainer.style.display = 'none';
-    illustrationContainer.style.display = 'none';
+    elements.loadingSpinner.style.display = 'block';
+    elements.storyContainer.style.display = 'none';
+    elements.illustrationContainer.style.display = 'none';
 
     // Hide name input and prompt while loading
-    promptText.style.display = 'none';
-    heroNameInput.style.display = 'none';
+    elements.promptText.style.display = 'none';
+    elements.heroNameInput.style.display = 'none';
 
     try {
         const response = await fetch('/generate-story', {
@@ -145,22 +143,22 @@ generateStoryButton.addEventListener('click', async () => {
                 sidekick: choices.sidekick,
                 name: choices.name,
                 look: choices.look,
-                gender: choices.look?.split(' ')[0], 
+                gender: selectedLook?.gender, 
             })
         });
 
-        loadingSpinner.style.display = 'none';
+        elements.loadingSpinner.style.display = 'none';
 
         if (response.ok) {
             const data = await response.json();
-            storyContainer.textContent = data.story;
-            storyContainer.style.display = 'block';
-            generateImageButton.style.display = 'inline-block';
+            elements.storyContainer.textContent = data.story;
+            elements.storyContainer.style.display = 'block';
+            elements.generateImageButton.style.display = 'inline-block';
         } else {
             alert('Failed to generate story. Please try again.');
         }
     } catch {
-        loadingSpinner.style.display = 'none';
+        elements.loadingSpinner.style.display = 'none';
         alert('An error occurred. Please try again.');
     }
 });
@@ -169,29 +167,29 @@ generateStoryButton.addEventListener('click', async () => {
 renderOptions(currentStep);
 
 // Start Over button resets the app
-startOverButton.addEventListener('click', () => {
+elements.startOverButton.addEventListener('click', () => {
     location.reload();
 });
 
 // Generate Image button click event
-generateImageButton.addEventListener('click', async () => {
-    imageSpinner.style.display = 'block';
-    illustrationContainer.style.display = 'none';
+elements.generateImageButton.addEventListener('click', async () => {
+    elements.imageSpinner.style.display = 'block';
+    elements.illustrationContainer.style.display = 'none';
 
     try {
         const response = await fetch('/generate-illustration', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                story: storyContainer.textContent,
-                gender: choices.look?.split(' ')[0],    // Extract gender (Male, Female, Neutral)
-                skinTone: choices.look?.split(' ')[1],   // Extract skin tone (e.g., Light, Dark)
-                color: choices.color   ,                  // Favorite color
+                story: elements.storyContainer.textContent,
+                gender: selectedLook?.gender,
+                skinTone: selectedLook?.skinTone,
+                color: choices.color,
                 name: choices.name
             })
         });
 
-        imageSpinner.style.display = 'none';
+        elements.imageSpinner.style.display = 'none';
 
         if (response.ok) {
             const data = await response.json();
@@ -201,14 +199,14 @@ generateImageButton.addEventListener('click', async () => {
             img.style.maxWidth = '100%';
             img.style.borderRadius = '10px';
             img.style.boxShadow = '0px 5px 15px rgba(90, 158, 216, 0.3)';
-            illustrationContainer.innerHTML = '';
-            illustrationContainer.appendChild(img);
-            illustrationContainer.style.display = 'block';
+            elements.illustrationContainer.innerHTML = '';
+            elements.illustrationContainer.appendChild(img);
+            elements.illustrationContainer.style.display = 'block';
         } else {
             alert('Failed to generate illustration. Please try again.');
         }
     } catch {
-        imageSpinner.style.display = 'none';
+        elements.imageSpinner.style.display = 'none';
         alert('An error occurred. Please try again.');
     }
 });
