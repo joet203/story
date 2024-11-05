@@ -1,7 +1,7 @@
 {
-  "name": "tourstoryalkwithbb",
+  "name": "story-ai",
   "version": "0.1.0",
-  "description": "A simple to generate stories and images Node app",
+  "description": "A simple Node app to generate stories and images",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
