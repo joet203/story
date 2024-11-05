@@ -6,11 +6,11 @@ add sqlite database
 - error log
 
 compress images
-- webp
+- webp format
 
 security
 - user login with oauth
-- allow-list options on backend
+- use allow-list to validate options on backend
 
 ux enhancements
 - choose hair color

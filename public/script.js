@@ -75,8 +75,10 @@ function renderLookOptions() {
     lookContainer.style.display = 'block';
     document.querySelector('.container').appendChild(lookContainer);
 
-    // Function to create rows for each gender type
-    function createLookRow(label, optionsArray) {
+    lookContainer.innerHTML = '';
+
+    // for choosing gender and skin tone from grid
+    function createLookRow(label, options) {
         const labelElement = document.createElement('p');
         labelElement.textContent = label;
         labelElement.style.fontWeight = 'bold';
@@ -194,7 +196,7 @@ elements.generateImageButton.addEventListener('click', async () => {
         if (response.ok) {
             const data = await response.json();
             const img = document.createElement('img');
-            img.src = data.imageUrl;
+            img.src = data.imagePath;
             img.alt = 'Generated Illustration';
             img.style.maxWidth = '100%';
             img.style.borderRadius = '10px';

@@ -5,7 +5,7 @@ const fs = require("fs").promises;
 const { Configuration, OpenAIApi } = require("openai");
 const fetch = require("node-fetch");
 const extraRoutes = require('./debug/extraRoutes'); 
-require('./helpers');
+const helpers = require('./helpers');
 
 // Initialize Express app
 const app = express();
@@ -21,7 +21,7 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-ensureDirectoriesExist();
+helpers.ensureDirectoriesExist();
 
 // Endpoint to generate a story
 // TODO: validate inputs against allow-list
@@ -56,11 +56,11 @@ app.post("/generate-story", async (req, res) => {
     });
 
     const story = completion.data.choices[0].message.content.trim();
-    await logRequest(story); // Log the generated story
+    await helpers.logRequest(story); // Log the generated story
     res.json({ story: story });
   } catch (error) {
     console.error('Error generating story:', error);
-    await logError(error);
+    await helpers.logError(error);
     res.status(500).json({ error: 'An error occurred while generating the story.' });
   }
 });
@@ -75,7 +75,7 @@ app.post("/generate-illustration", async (req, res) => {
   }
 
   try {
-    const id = await getNextID();
+    const id = await helpers.getNextID();
 
     // Log the story to a text file in the 'stories' directory
     const storyFile = path.join(__dirname, 'stories', `story_${id}.txt`);
@@ -98,6 +98,7 @@ app.post("/generate-illustration", async (req, res) => {
     console.log(skinTone);
 
     const response = await openai.createImage({
+      model: "dall-e-3",
       prompt: prompt,
       n: 1,
       size: "1024x1024",
@@ -113,12 +114,15 @@ app.post("/generate-illustration", async (req, res) => {
     const imageResponse = await fetch(imageUrl);
     const buffer = await imageResponse.buffer();
     const imageFile = path.join(__dirname, 'public', 'images', `image_${id}.png`);
+    const dir = path.dirname(imageFile);
     try {
+      // Create the directory if it doesn't exist
+      await fs.mkdir(dir, { recursive: true });
       await fs.writeFile(imageFile, buffer);
       console.log(`Image saved successfully: ${imageFile}`);
     } catch (error) {
       console.error("Error saving image:", error);
-      await logError(error);
+      await helpers.logError(error);
     }
 
     const imagePath = `/images/image_${id}.png`; // Return the local image path
@@ -126,7 +130,7 @@ app.post("/generate-illustration", async (req, res) => {
     res.json({ imagePath });
   } catch (error) {
     console.error("Error generating illustration:", error);
-    await logError(error);
+    await helpers.logError(error);
     res.status(500).json({ error: "Failed to generate illustration" });
   }
 });
