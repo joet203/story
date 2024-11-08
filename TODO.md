@@ -1,4 +1,4 @@
-# TODO 🚧
+# TODO 
 
 add sqlite database
 - saving stories
@@ -13,7 +13,7 @@ security
 - use allow-list to validate options on backend
 
 ux enhancements
-- choose hair color
+- choose hair color, etc
 - go back to previous step/edit functionality
 
 api
