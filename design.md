@@ -20,7 +20,7 @@ This proof-of-concept focuses on developing a minimalist web application that:
 
 ### **Definitions**
 
-* **Node.js**: JavaScript runtime built on Chrome's V8 engine  
+* **Node.js**: Server-side JavaScript runtime.  
 * **Express**: Web application framework for Node.js  
 * **GPT-4o**: OpenAI's GPT-4 optimized for story generation  
 * **GPT-4o-mini**: A lighter version of GPT-4o for processing stories into image concepts  
@@ -33,7 +33,10 @@ This proof-of-concept focuses on developing a minimalist web application that:
 A simple web application that helps counselors engage middle school students through personalized stories and images:
 
 * **Frontend**: Built with HTML, CSS, and JavaScript, providing an interactive UI where students select inputs via images and text.  
-* **Backend**: A Node.js/Express server handling API requests, integrating with OpenAI's GPT-4o for story generation and DALL·E 3 for image generation.  
+* **Backend**: A Node.js/Express server handling API requests, integrating with OpenAI's GPT-4o for story generation and DALL·E 3 for image generation.
+
+  ![image](https://github.com/user-attachments/assets/178becb1-a4f7-42cc-9886-509091205552)
+
 * **Workflow**:  
   1. User provides inputs through the UI.  
   2. Inputs are sent via AJAX to the backend server.  
