@@ -1,4 +1,4 @@
-Web app for children to generate custom short stories and images with wellness themes. For use by guidance/wellness coaches with middle school students.
+Web app for children to generate custom short stories and images with wellness themes. For use by guidance/wellness counselors with middle school students.
 
 See server.js for main api endpoints.
 
